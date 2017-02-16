@@ -30,7 +30,7 @@ public class Fenetre extends JFrame implements ActionListener, KeyListener {
 
         this.setSize(new DimensionUIResource(500,500));
         this.setTitle("Chat");
-        this.setLocation(null);
+        //this.setLocation(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
         this.getContentPane().add(text,BorderLayout.CENTER);
