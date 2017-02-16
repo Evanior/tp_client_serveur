@@ -37,7 +37,8 @@ public class ThreadClient extends Thread {
             str = (String)in.readObject();
             this.name = str;
             out.flush();
-            out.writeObject("bonjour "+name+", bienvenu sur le serveur de Timothée");
+            out.writeObject("bonjour "+name+", bienvenu sur le serveur de Timothée\n" +
+                    "Ecrire 'Logout' pour quitter");
             out.flush();
         }catch (IOException e){
             e.printStackTrace();

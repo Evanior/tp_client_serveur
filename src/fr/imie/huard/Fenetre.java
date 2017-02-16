@@ -2,6 +2,8 @@ package fr.imie.huard;
 
 import javax.swing.*;
 import javax.swing.plaf.DimensionUIResource;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,8 +17,8 @@ import java.io.ObjectOutputStream;
  * Created by huard.cdi04 on 10/02/2017.
  */
 public class Fenetre extends JFrame implements ActionListener, KeyListener {
-    private JButton button =new JButton("Envoyer");
-    private JTextArea text =new JTextArea();
+    private JButton button = new JButton("Envoyer");
+    private JTextArea text = new JTextArea();
     private JTextField field = new JTextField();
 
     ObjectOutputStream out = null;
@@ -27,18 +29,26 @@ public class Fenetre extends JFrame implements ActionListener, KeyListener {
         out = client.getOut();
         in = client.getIn();
 
+        JPanel panel = new JPanel();
+        BorderLayout gl = new BorderLayout();
+        panel.setLayout(gl);
+        panel.add(field,BorderLayout.CENTER);
+        panel.add(button,BorderLayout.EAST);
+
         this.setSize(new DimensionUIResource(500,500));
-        this.setTitle("Chat");
+        this.setTitle("Chat multi-thread");
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         BorderLayout bl = new BorderLayout();
         this.setLayout(bl);
         this.getContentPane().add(text,BorderLayout.CENTER);
-        this.getContentPane().add(button,BorderLayout.SOUTH);
-        this.getContentPane().add(field,BorderLayout.SOUTH);
+        this.getContentPane().add(panel, BorderLayout.SOUTH);
         button.addActionListener(this);
         this.getRootPane().setDefaultButton(button);
 
+        text.setFocusable(false);
+        text.setLineWrap(true);
+        text.setAutoscrolls(true);
         this.setVisible(true);
     }
 
@@ -115,8 +125,17 @@ class Update implements Runnable{
                 System.exit(0);
             }
             text.append(reponse+"\n");
+            if(text.getLineCount() > 28){
+                int firtLine = text.getText().indexOf('\n')+1;
+                int taille = text.getText().length() - firtLine;
+                try {
+                    text.setText(text.getText(firtLine,taille));
+                } catch (BadLocationException e) {
+                    e.printStackTrace();
+                }
+            }
             try {
-                Thread.sleep(1000);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
