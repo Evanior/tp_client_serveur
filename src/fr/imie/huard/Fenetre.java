@@ -31,10 +31,11 @@ public class Fenetre extends JFrame implements ActionListener, KeyListener {
         this.setTitle("Chat");
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setLayout(new BorderLayout());
+        BorderLayout bl = new BorderLayout();
+        this.setLayout(bl);
         this.getContentPane().add(text,BorderLayout.CENTER);
-        this.getContentPane().add(field,BorderLayout.NORTH);
         this.getContentPane().add(button,BorderLayout.SOUTH);
+        this.getContentPane().add(field,BorderLayout.SOUTH);
         button.addActionListener(this);
         this.getRootPane().setDefaultButton(button);
 
@@ -49,7 +50,7 @@ public class Fenetre extends JFrame implements ActionListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent keyEvent) {
         if(keyEvent.getKeyCode() == KeyEvent.VK_ENTER){
-            actionPerformed(null);
+            envoieText();
         }
     }
 
@@ -68,6 +69,12 @@ public class Fenetre extends JFrame implements ActionListener, KeyListener {
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
+        if(actionEvent.getSource() == button){
+            envoieText();
+        }
+    }
+
+    public void envoieText(){
         try {
             out.writeObject(field.getText());
             out.flush();
