@@ -3,7 +3,6 @@ package fr.imie.huard;
 import javax.swing.*;
 import javax.swing.plaf.DimensionUIResource;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,6 +38,7 @@ public class Fenetre extends JFrame implements ActionListener, KeyListener {
         this.setTitle("Chat multi-thread");
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         BorderLayout bl = new BorderLayout();
         this.setLayout(bl);
         this.getContentPane().add(text,BorderLayout.CENTER);
@@ -84,6 +84,9 @@ public class Fenetre extends JFrame implements ActionListener, KeyListener {
         }
     }
 
+    /**
+     * envoie du text au serveur
+     */
     public void envoieText(){
         try {
             out.writeObject(field.getText());
@@ -101,6 +104,9 @@ public class Fenetre extends JFrame implements ActionListener, KeyListener {
     }
 }
 
+/**
+ * Runnable permettant de rafraichir la fenetre
+ */
 class Update implements Runnable{
     JTextArea text = null;
     ObjectInputStream in = null;
@@ -115,17 +121,17 @@ class Update implements Runnable{
         while (true){
             String reponse = null;
             try {
-                reponse = (String)in.readObject();
+                reponse = (String)in.readObject();//reception de la reponse du serveur
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
             if(reponse.equals("vous : Logout")){
-                System.exit(0);
+                System.exit(0);//quitte si on écris Logout
             }
-            text.append(reponse+"\n");
-            if(text.getLineCount() > 28){
+            text.append(reponse+"\n");//afficher la reponse
+            if(text.getLineCount() > 28){//realise le defilement du text
                 int firtLine = text.getText().indexOf('\n')+1;
                 int taille = text.getText().length() - firtLine;
                 try {

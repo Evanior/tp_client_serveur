@@ -51,7 +51,7 @@ public class ThreadClient extends Thread {
             try {
                 str = (String)in.readObject();
                 System.out.println(name+" : "+str);
-                out.writeObject("vous : "+str);
+                out.writeObject("vous : "+str);//echo vers le client
                 out.flush();
             }catch (IOException e){
                 e.printStackTrace();
@@ -60,7 +60,7 @@ public class ThreadClient extends Thread {
                 e.printStackTrace();
                 break;
             }
-            for (ThreadClient t: Serveur.listeThread) {
+            for (ThreadClient t: Serveur.listeThread) {//pour tous les autres envoyer le nom et le message
                 if(!t.equals(this)) {
                     try {
                         t.getOut().writeObject(name+" : " + str);
