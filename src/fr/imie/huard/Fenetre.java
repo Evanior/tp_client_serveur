@@ -49,6 +49,7 @@ public class Fenetre extends JFrame implements ActionListener, KeyListener {
         text.setFocusable(false);
         text.setLineWrap(true);
         text.setAutoscrolls(true);
+        this.setResizable(false);
         this.setVisible(true);
     }
 
@@ -131,7 +132,7 @@ class Update implements Runnable{
                 System.exit(0);//quitte si on écris Logout
             }
             text.append(reponse+"\n");//afficher la reponse
-            if(text.getLineCount() > 28){//realise le defilement du text
+            if(text.getLineCount() > 27){//realise le defilement du text
                 int firtLine = text.getText().indexOf('\n')+1;
                 int taille = text.getText().length() - firtLine;
                 try {
