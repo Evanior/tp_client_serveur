@@ -7,7 +7,7 @@ import java.util.*;
 
 public class Serveur {
 
-    public static ArrayList<ThreadClient> listeThread = new ArrayList<ThreadClient>();
+    public static ArrayList<ThreadClient> listeThread = new ArrayList<>();
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         ServerSocket server = new ServerSocket(222);

@@ -4,19 +4,17 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Scanner;
 
 /**
  * Created by huard.cdi04 on 10/02/2017.
  */
 public class Client {
 
-    private Socket client = null;
     private ObjectOutputStream out = null;
     private ObjectInputStream in = null;
 
     public Client() throws IOException {
-        client = new Socket("127.0.0.1",222);
+        Socket client = new Socket("127.0.0.1", 222);
         out = new ObjectOutputStream(client.getOutputStream());
         in = new ObjectInputStream(client.getInputStream());
     }

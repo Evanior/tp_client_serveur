@@ -20,8 +20,8 @@ public class Fenetre extends JFrame implements ActionListener, KeyListener {
     private JTextArea text = new JTextArea();
     private JTextField field = new JTextField();
 
-    ObjectOutputStream out = null;
-    ObjectInputStream in = null;
+    private ObjectOutputStream out = null;
+    private ObjectInputStream in = null;
 
     public Fenetre() throws IOException {
         Client client = new Client();
@@ -123,9 +123,7 @@ class Update implements Runnable{
             String reponse = null;
             try {
                 reponse = (String)in.readObject();//reception de la reponse du serveur
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
             if(reponse.equals("vous : Logout")){

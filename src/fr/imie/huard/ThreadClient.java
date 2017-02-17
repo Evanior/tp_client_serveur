@@ -40,9 +40,7 @@ public class ThreadClient extends Thread {
             out.writeObject("bonjour "+name+", bienvenu sur le serveur de Timothée\n" +
                     "Ecrire 'Logout' pour quitter");
             out.flush();
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (ClassNotFoundException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
         System.out.println(name+" c'est connecté, il y a : "+nbClient+" client");
