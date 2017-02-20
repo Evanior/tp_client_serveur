@@ -16,14 +16,18 @@ import java.io.ObjectOutputStream;
  * Created by huard.cdi04 on 10/02/2017.
  */
 public class Fenetre extends JFrame implements ActionListener, KeyListener {
-    private JButton button = new JButton("Envoyer");
-    private JTextArea text = new JTextArea();
-    private JTextField field = new JTextField();
+    private JButton button;
+    private JTextArea text;
+    private JTextField field;
 
     private ObjectOutputStream out = null;
     private ObjectInputStream in = null;
 
     public Fenetre() throws IOException {
+        button = new JButton("Envoyer");
+        text = new JTextArea();
+        field = new JTextField();
+
         Client client = new Client();
         out = client.getOut();
         in = client.getIn();
@@ -33,6 +37,9 @@ public class Fenetre extends JFrame implements ActionListener, KeyListener {
         panel.setLayout(gl);
         panel.add(field,BorderLayout.CENTER);
         panel.add(button,BorderLayout.EAST);
+
+        //JScrollPane scrollPane = new JScrollPane();
+        //scrollPane.add(text);
 
         this.setSize(new DimensionUIResource(500,500));
         this.setTitle("Chat multi-thread");
