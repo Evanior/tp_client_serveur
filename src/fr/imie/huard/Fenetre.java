@@ -152,11 +152,16 @@ class Update implements Runnable{
             if(reponse.equals("vous : Logout")){
                 System.exit(0);//quitte si on écris Logout
             }
-            if(reponse.contains("CliEnt : ")){
+            if(reponse.startsWith("CliEnt : ")){
                 String[] strSplit = reponse.split(" : ");
                 if(!userListe.contains(strSplit[1]) && !strSplit[1].equals("default")){
                     userListe.add(strSplit[1]);
                 }
+                user.setText("Utilisateur : "+userListe.size());
+                userListe.forEach(nom -> user.append("\n"+nom));
+            }else if(reponse.endsWith("Logout")){
+                String[] strSplit = reponse.split(" : ");
+                userListe.remove(strSplit[0]);
                 user.setText("Utilisateur : "+userListe.size());
                 userListe.forEach(nom -> user.append("\n"+nom));
             }else {
