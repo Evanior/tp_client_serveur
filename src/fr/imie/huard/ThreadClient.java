@@ -25,6 +25,10 @@ public class ThreadClient extends Thread {
         return out;
     }
 
+    public String getNom() {
+        return name;
+    }
+
     @Override
     public void run(){
         nbClient++;
@@ -44,6 +48,25 @@ public class ThreadClient extends Thread {
             e.printStackTrace();
         }
         System.out.println(name+" c'est connecté, il y a : "+nbClient+" client");
+        for (ThreadClient t: Serveur.listeThread) {//pour tous les autres envoyer le nom et le message
+            if(!t.equals(this)) {
+                try {
+                    t.getOut().writeObject("CliEnt : "+name);
+                    t.getOut().flush();
+                    out.writeObject("CliEnt : "+t.getNom());
+                    out.flush();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }else {
+                try {
+                    out.writeObject("CliEnt : "+t.getNom());
+                    out.flush();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
 
         while(!str.equals("Logout")){
             try {
@@ -63,12 +86,22 @@ public class ThreadClient extends Thread {
                     try {
                         t.getOut().writeObject(name+" : " + str);
                         t.getOut().flush();
+                        t.getOut().writeObject("CliEnt : "+name);
+                        t.getOut().flush();
+                        out.writeObject("CliEnt : "+t.getNom());
+                        out.flush();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }else {
+                    try {
+                        out.writeObject("CliEnt : "+t.getNom());
+                        out.flush();
                     }catch (Exception e){
                         e.printStackTrace();
                     }
                 }
             }
-
         }
 
         nbClient--;
