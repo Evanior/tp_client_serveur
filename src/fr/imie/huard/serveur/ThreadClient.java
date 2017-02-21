@@ -1,6 +1,4 @@
-package fr.imie.huard.client;
-
-import fr.imie.huard.serveur.Serveur;
+package fr.imie.huard.serveur;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -96,6 +94,14 @@ public class ThreadClient extends Thread {
 
         nbClient--;
         Serveur.listeThread.remove(this);
+        for (ThreadClient t: Serveur.listeThread) {//pour tous les autres envoyer le nom et le message
+            try {
+                t.getOut().writeObject(name + " : Logout");
+                t.getOut().flush();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
         System.out.println(name+" c'est déconnecté, il reste : "+nbClient+" client");
     }
 }
