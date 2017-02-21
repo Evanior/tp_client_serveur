@@ -2,7 +2,6 @@ package fr.imie.huard;
 
 import javax.swing.*;
 import javax.swing.plaf.DimensionUIResource;
-import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,6 +10,7 @@ import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 /**
  * Created by huard.cdi04 on 10/02/2017.
@@ -18,7 +18,9 @@ import java.io.ObjectOutputStream;
 public class Fenetre extends JFrame implements ActionListener, KeyListener {
     private JButton button;
     private JTextArea text;
+    private JTextArea user;
     private JTextField field;
+    private JScrollPane scrollText;
 
     private ObjectOutputStream out = null;
     private ObjectInputStream in = null;
@@ -26,36 +28,42 @@ public class Fenetre extends JFrame implements ActionListener, KeyListener {
     public Fenetre() throws IOException {
         button = new JButton("Envoyer");
         text = new JTextArea();
+        user = new JTextArea("Utilisateur : ");
         field = new JTextField();
 
         Client client = new Client();
         out = client.getOut();
         in = client.getIn();
 
-        JPanel panel = new JPanel();
-        BorderLayout gl = new BorderLayout();
-        panel.setLayout(gl);
-        panel.add(field,BorderLayout.CENTER);
-        panel.add(button,BorderLayout.EAST);
+        JPanel panelSud = new JPanel();
+        BorderLayout layoutSud = new BorderLayout();
+        panelSud.setLayout(layoutSud);
+        panelSud.add(field,BorderLayout.CENTER);
+        panelSud.add(button,BorderLayout.EAST);
 
-        //JScrollPane scrollPane = new JScrollPane();
-        //scrollPane.add(text);
+        scrollText = new JScrollPane(text);
+        JPanel panelPrincipal = new JPanel();
+        JPanel panelScondaire = new JPanel();
+        BorderLayout layoutPrincipal = new BorderLayout();
+        panelPrincipal.setLayout(layoutPrincipal);
+        panelScondaire.add(user,BorderLayout.CENTER);
+        panelPrincipal.add(scrollText,BorderLayout.CENTER);
 
         this.setSize(new DimensionUIResource(500,500));
         this.setTitle("Chat multi-thread");
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        BorderLayout bl = new BorderLayout();
-        this.setLayout(bl);
-        this.getContentPane().add(text,BorderLayout.CENTER);
-        this.getContentPane().add(panel, BorderLayout.SOUTH);
+        this.setLayout(new BorderLayout());
+        this.getContentPane().add(new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelScondaire,panelPrincipal),BorderLayout.CENTER);
+        this.getContentPane().add(panelSud, BorderLayout.SOUTH);
         button.addActionListener(this);
         this.getRootPane().setDefaultButton(button);
 
         text.setFocusable(false);
+        user.setFocusable(false);
         text.setLineWrap(true);
-        text.setAutoscrolls(true);
+        scrollText.setAutoscrolls(true);
         this.setResizable(false);
         this.setVisible(true);
     }
@@ -83,6 +91,10 @@ public class Fenetre extends JFrame implements ActionListener, KeyListener {
 
     public ObjectInputStream getIn() {
         return in;
+    }
+
+    public JTextArea getUserText() {
+        return user;
     }
 
     @Override
@@ -116,11 +128,15 @@ public class Fenetre extends JFrame implements ActionListener, KeyListener {
  * Runnable permettant de rafraichir la fenetre
  */
 class Update implements Runnable{
-    JTextArea text = null;
-    ObjectInputStream in = null;
+    private JTextArea text = null;
+    private JTextArea user = null;
+    private ArrayList<String> userListe;
+    private ObjectInputStream in = null;
 
     public Update(Fenetre f) {
+        this.userListe = new ArrayList<>();
         this.text = f.getText();
+        this.user = f.getUserText();
         this.in = f.getIn();
     }
 
@@ -136,8 +152,19 @@ class Update implements Runnable{
             if(reponse.equals("vous : Logout")){
                 System.exit(0);//quitte si on écris Logout
             }
-            text.append(reponse+"\n");//afficher la reponse
-            if(text.getLineCount() > 27){//realise le defilement du text
+            if(reponse.contains("CliEnt : ")){
+                String[] strSplit = reponse.split(" : ");
+                if(!userListe.contains(strSplit[1]) && !strSplit[1].equals("default")){
+                    userListe.add(strSplit[1]);
+                }
+                user.setText("Utilisateur : "+userListe.size());
+                userListe.forEach(nom -> user.append("\n"+nom));
+            }else {
+                text.append(reponse+"\n");//afficher la reponse
+            }
+
+            //TODO à revoir via le scrollpane
+            /*if(text.getLineCount() > 27){//realise le defilement du text
                 int firtLine = text.getText().indexOf('\n')+1;
                 int taille = text.getText().length() - firtLine;
                 try {
@@ -145,7 +172,7 @@ class Update implements Runnable{
                 } catch (BadLocationException e) {
                     e.printStackTrace();
                 }
-            }
+            }*/
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
