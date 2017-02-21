@@ -49,22 +49,13 @@ public class ThreadClient extends Thread {
         }
         System.out.println(name+" c'est connecté, il y a : "+nbClient+" client");
         for (ThreadClient t: Serveur.listeThread) {//pour tous les autres envoyer le nom et le message
-            if(!t.equals(this)) {
-                try {
-                    t.getOut().writeObject("CliEnt : "+name);
-                    t.getOut().flush();
-                    out.writeObject("CliEnt : "+t.getNom());
-                    out.flush();
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }else {
-                try {
-                    out.writeObject("CliEnt : "+t.getNom());
-                    out.flush();
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
+            try {
+                t.getOut().writeObject("CliEnt : " + name);
+                t.getOut().flush();
+                out.writeObject("CliEnt : " + t.getNom());
+                out.flush();
+            }catch (Exception e){
+                e.printStackTrace();
             }
         }
 
@@ -84,22 +75,19 @@ public class ThreadClient extends Thread {
             for (ThreadClient t: Serveur.listeThread) {//pour tous les autres envoyer le nom et le message
                 if(!t.equals(this)) {
                     try {
-                        t.getOut().writeObject(name+" : " + str);
+                        t.getOut().writeObject(name + " : " + str);
                         t.getOut().flush();
-                        t.getOut().writeObject("CliEnt : "+name);
-                        t.getOut().flush();
-                        out.writeObject("CliEnt : "+t.getNom());
-                        out.flush();
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }else {
-                    try {
-                        out.writeObject("CliEnt : "+t.getNom());
-                        out.flush();
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
+                }
+                try {
+                    t.getOut().writeObject("CliEnt : " + name);
+                    t.getOut().flush();
+                    out.writeObject("CliEnt : " + t.getNom());
+                    out.flush();
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
             }
         }
