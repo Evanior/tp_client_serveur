@@ -1,4 +1,6 @@
-package fr.imie.huard;
+package fr.imie.huard.serveur;
+
+import fr.imie.huard.client.ThreadClient;
 
 import java.io.IOException;
 import java.net.ServerSocket;

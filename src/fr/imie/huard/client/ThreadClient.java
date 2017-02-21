@@ -1,4 +1,6 @@
-package fr.imie.huard;
+package fr.imie.huard.client;
+
+import fr.imie.huard.serveur.Serveur;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

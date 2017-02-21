@@ -1,4 +1,4 @@
-package fr.imie.huard;
+package fr.imie.huard.client;
 
 import javax.swing.*;
 import javax.swing.plaf.DimensionUIResource;
