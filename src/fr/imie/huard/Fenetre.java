@@ -3,10 +3,7 @@ package fr.imie.huard;
 import javax.swing.*;
 import javax.swing.plaf.DimensionUIResource;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -15,12 +12,11 @@ import java.util.ArrayList;
 /**
  * Created by huard.cdi04 on 10/02/2017.
  */
-public class Fenetre extends JFrame implements ActionListener, KeyListener {
+public class Fenetre extends JFrame implements ActionListener, KeyListener, WindowListener {
     private JButton button;
     private JTextArea text;
     private JTextArea user;
     private JTextField field;
-    private JScrollPane scrollText;
 
     private ObjectOutputStream out = null;
     private ObjectInputStream in = null;
@@ -41,7 +37,7 @@ public class Fenetre extends JFrame implements ActionListener, KeyListener {
         panelSud.add(field,BorderLayout.CENTER);
         panelSud.add(button,BorderLayout.EAST);
 
-        scrollText = new JScrollPane(text);
+        JScrollPane scrollText = new JScrollPane(text);
         JPanel panelPrincipal = new JPanel();
         JPanel panelScondaire = new JPanel();
         BorderLayout layoutPrincipal = new BorderLayout();
@@ -66,6 +62,8 @@ public class Fenetre extends JFrame implements ActionListener, KeyListener {
         scrollText.setAutoscrolls(true);
         this.setResizable(false);
         this.setVisible(true);
+
+        this.addWindowListener(this);
     }
 
     @Override
@@ -76,7 +74,8 @@ public class Fenetre extends JFrame implements ActionListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent keyEvent) {
         if(keyEvent.getKeyCode() == KeyEvent.VK_ENTER){
-            envoieText();
+            envoieText(field.getText());
+            field.setText("");
         }
     }
 
@@ -100,18 +99,18 @@ public class Fenetre extends JFrame implements ActionListener, KeyListener {
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         if(actionEvent.getSource() == button){
-            envoieText();
+            envoieText(field.getText());
+            field.setText("");
         }
     }
 
     /**
      * envoie du text au serveur
      */
-    public void envoieText(){
+    public void envoieText(String msg){
         try {
-            out.writeObject(field.getText());
+            out.writeObject(msg);
             out.flush();
-            field.setText("");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -121,6 +120,41 @@ public class Fenetre extends JFrame implements ActionListener, KeyListener {
         Fenetre f = new Fenetre();
         Thread t = new Thread(new Update(f));
         t.start();
+    }
+
+    @Override
+    public void windowOpened(WindowEvent windowEvent) {
+
+    }
+
+    @Override
+    public void windowClosing(WindowEvent windowEvent) {
+        envoieText("Logout");
+    }
+
+    @Override
+    public void windowClosed(WindowEvent windowEvent) {
+
+    }
+
+    @Override
+    public void windowIconified(WindowEvent windowEvent) {
+
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent windowEvent) {
+
+    }
+
+    @Override
+    public void windowActivated(WindowEvent windowEvent) {
+
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent windowEvent) {
+
     }
 }
 
